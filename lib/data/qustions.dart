@@ -1,24 +1,20 @@
 import 'package:equatable/equatable.dart';
 
-class Questions extends Equatable{
+class Questions extends Equatable {
   String question;
   List<Options> options;
-  Options answer;
 
-  Questions(this.question, this.options, this.answer);
-
-  bool isCorrectAnswer(Options options) {
-    return answer == options;
-  }
+  Questions(this.question, this.options);
 
   @override
-  List<Object> get props => [question];
+  List<Object> get props => [question,options];
 }
 
 class Options extends Equatable {
   String answer;
+  bool isRightAnswer = false;
 
-  Options(this.answer);
+  Options(this.answer, {this.isRightAnswer = false});
 
   @override
   List<Object> get props => [answer];
