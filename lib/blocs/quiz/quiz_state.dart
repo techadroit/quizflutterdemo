@@ -20,7 +20,11 @@ class ShowQuestion extends QuizState {
   List<Object> get props => [questions];
 }
 
-class QuizComplete extends QuizState {}
+class QuizComplete extends QuizState {
+  int marks;
+  int total;
+  QuizComplete(this.marks,this.total);
+}
 
 class CorrectAnswer extends QuizState {}
 

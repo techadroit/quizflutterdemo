@@ -6,6 +6,10 @@ class Questions extends Equatable {
 
   Questions(this.question, this.options);
 
+  Options getAnswer(){
+    return options.where((element) => element.isRightAnswer).first;
+  }
+
   @override
   List<Object> get props => [question,options];
 }

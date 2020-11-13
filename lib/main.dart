@@ -1,6 +1,8 @@
+import 'package:TataEdgeDemo/blocs/quiz/quiz_state.dart';
 import 'package:TataEdgeDemo/blocs/topics/topic_bloc.dart';
 import 'package:TataEdgeDemo/blocs/topics/topic_event.dart';
 import 'package:TataEdgeDemo/blocs/topics/topic_state.dart';
+import 'package:TataEdgeDemo/view/quiz/quiz_widget.dart';
 import 'package:TataEdgeDemo/view/topic_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +29,11 @@ class MyApp extends StatelessWidget {
                 fontSize: 32,
                 fontFamily: 'Montserrat',
                 color: Colors.white.withOpacity(0.8)),
+            subtitle1: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                fontFamily: 'OpenSans',
+                color: Colors.white.withOpacity(0.8)),
             bodyText1: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
@@ -45,7 +52,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
-        body: TopicListWidget(),
+        body: TopicListWidget()
       ),
     );
   }

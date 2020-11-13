@@ -32,6 +32,7 @@ dependencies:
   dio: ^3.0.10
   dio_retry: ^0.1.9-beta
   dartz: ^0.8.9
+  animated_text_kit: 2.5.4
 
 
   # The following adds the Cupertino Icons font to your application.

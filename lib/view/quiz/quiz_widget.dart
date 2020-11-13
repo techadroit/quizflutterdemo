@@ -5,6 +5,8 @@ import 'package:TataEdgeDemo/blocs/quiz/quiz_event.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_state.dart';
 import 'package:TataEdgeDemo/data/categories.dart';
 import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,9 +28,11 @@ class QuizWidget extends StatelessWidget {
               if (state is ShowQuestion) {
                 return QuestionWidget(state.questions,ValueKey(state.questions.question));
               } else if (state is QuizComplete) {
-                return QuizComplete();
+                return QuizCompleteWidget(state.marks,state.total);
               } else {
-                return CircularProgressIndicator();
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               }
             },
           ),
@@ -58,7 +62,7 @@ class QuestionWidget extends StatelessWidget {
               questions.question,
               style: textTheme.headline2,
             ),
-            QuestionTimeOut(),
+            buildTimer(context),
             Flexible(
               child: GridView.builder(
                   itemCount: questions.options.length,
@@ -74,6 +78,38 @@ class QuestionWidget extends StatelessWidget {
       ),
     );
   }
+
+  Widget buildTimer(BuildContext context){
+    return Container(
+      child: Stack(
+        children: [
+          Positioned(
+            top: 30.0,
+            left: 40.0,
+            child: ScaleAnimatedTextKit(
+                onTap: () {
+                  print("Tap Event");
+                },
+                onFinished: () {
+                  BlocProvider.of<QuizBloc>(context).add(ShowNext());
+                },
+                totalRepeatCount: 1,
+                duration: Duration(milliseconds: 600),
+                text: ["10", "09", "08","07","06","05","04","03","02","01"],
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 60.0,
+                    fontFamily: "OpenSans"),
+                textAlign: TextAlign.center,
+                alignment: AlignmentDirectional.center // or Alignment.topLeft
+            ),
+          ),
+          QuestionTimeOut(),
+        ],
+      ),
+    );
+  }
 }
 
 class AnswerWidget extends StatelessWidget {
@@ -86,31 +122,63 @@ class AnswerWidget extends StatelessWidget {
     var textTheme = Theme.of(context).primaryTextTheme;
     return GestureDetector(
       onTap: () {
-        BlocProvider.of<QuizBloc>(context).add(ShowNext());
+        BlocProvider.of<QuizBloc>(context).add(SubmitAnswer(options));
       },
       child: Card(
         margin: EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            Text(
-              options.answer,
-              style: textTheme.bodyText1,
-            )
-          ],
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  options.answer,
+                  style: textTheme.bodyText1,
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class QuizComplete extends StatelessWidget {
+class QuizCompleteWidget extends StatelessWidget {
+
+  int marks;
+  int total;
+
+  QuizCompleteWidget(this.marks,this.total);
+
   @override
   Widget build(BuildContext context) {
-    return Text("Quiz Complete");
+    return Container(
+      margin: EdgeInsets.all(16.0),
+      child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("You have given $marks correct answer.",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).primaryTextTheme.headline2,),
+              SizedBox(height:30.0),
+              OutlineButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                borderSide: BorderSide(color:Theme.of(context).colorScheme.secondary,width: 2.0),
+                child: Text("Close",style: Theme.of(context).primaryTextTheme.subtitle1,),
+              )
+            ],
+          )
+      ),
+    );
   }
 }
-
-final Animatable<int> _kStepTween = StepTween(begin: 10, end: 1);
 
 class QuestionTimeOut extends StatefulWidget {
   @override
@@ -149,8 +217,7 @@ class QuestionTimeOutState extends State<QuestionTimeOut>
     return AnimatedBuilder(
       animation: controller,
       builder: (BuildContext context, Widget child) {
-        debugPrint(
-            " i was called and the value is ${controller.value}");
+
         return Container(
           margin: EdgeInsets.all(16.0),
           height: 120,
@@ -179,7 +246,6 @@ class ProgressPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // double _sweep = math.pi * _arcConstant/arcValue;
     double value = arcValue == 0 ? 2 : _arcConstant - arcValue;//(_arcConstant - (2 / arcValue));
-    debugPrint(" the arc value is $value");
     double _sweep = -(math.pi * value);
 
     var paint = Paint()

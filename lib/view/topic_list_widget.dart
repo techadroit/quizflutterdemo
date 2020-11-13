@@ -1,6 +1,7 @@
 import 'package:TataEdgeDemo/blocs/topics/topic_bloc.dart';
 import 'package:TataEdgeDemo/blocs/topics/topic_event.dart';
 import 'package:TataEdgeDemo/blocs/topics/topic_state.dart';
+import 'package:TataEdgeDemo/view/quiz/quiz_intro_widget.dart';
 import 'package:TataEdgeDemo/view/quiz/quiz_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +32,7 @@ class TopicListWidget extends StatelessWidget {
                     return ListTile(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => QuizWidget()));
+                              builder: (BuildContext context) => QuizIntroWidget()));
                         },
                         title: Text(
                           list[index].name,
