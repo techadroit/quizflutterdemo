@@ -45,6 +45,7 @@ class QuestionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).primaryTextTheme;
     return Container(
+      margin: EdgeInsets.all(8.0),
       height: double.infinity,
       child: Expanded(
         child: Column(
@@ -55,7 +56,7 @@ class QuestionWidget extends StatelessWidget {
               questions.question,
               style: textTheme.headline2,
             ),
-            CircularProgressIndicator(),
+            QuestionTimeOut(),
             Flexible(
               child: GridView.builder(
                   itemCount: questions.options.length,
@@ -104,5 +105,48 @@ class QuizComplete extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text("Quiz Complete");
+  }
+}
+
+class QuestionTimeOut extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(16.0),
+      height: 120,
+      width: 120,
+      child: CustomPaint(
+        painter: ProgressPainter(),
+      ),
+    );
+  }
+}
+
+class ProgressPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+
+    var paint = Paint()
+      ..color = Colors.teal
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    Offset center = Offset(size.width / 2, size.height / 2);
+
+    canvas.drawCircle(center, 60, paint);
+    var paintRed = Paint()
+      ..color = Colors.red
+      ..strokeWidth = 5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+
+    canvas.drawCircle(center, 60, paintRed);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
   }
 }
