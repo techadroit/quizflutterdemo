@@ -31,8 +31,9 @@ class TopicListWidget extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return ListTile(
                         onTap: () {
+                          var categories = list[index].categories;
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => QuizIntroWidget()));
+                              builder: (BuildContext context) => QuizIntroWidget(categories)));
                         },
                         title: Text(
                           list[index].name,

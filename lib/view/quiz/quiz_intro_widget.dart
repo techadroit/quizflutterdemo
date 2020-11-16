@@ -1,22 +1,27 @@
+import 'package:TataEdgeDemo/data/categories.dart';
 import 'package:TataEdgeDemo/view/quiz/quiz_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class QuizIntroWidget extends StatelessWidget {
+  Categories categories;
+
+  QuizIntroWidget(this.categories);
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.primary,
       body: Center(
-        child:ScaleAnimatedTextKit(
+        child: ScaleAnimatedTextKit(
             onTap: () {
               print("Tap Event");
             },
             onFinished: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => QuizWidget()));
+                  builder: (BuildContext context) => QuizWidget(categories)));
             },
             duration: Duration(milliseconds: 1000),
             totalRepeatCount: 1,
@@ -28,7 +33,7 @@ class QuizIntroWidget extends StatelessWidget {
                 fontFamily: "Monteserrat"),
             textAlign: TextAlign.start,
             alignment: AlignmentDirectional.topStart // or Alignment.topLeft
-        ),
+            ),
       ),
     );
   }

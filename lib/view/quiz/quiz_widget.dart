@@ -12,7 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class QuizWidget extends StatelessWidget {
-  var bloc = QuizBloc()..add(LoadQuiz(Categories.animal));
+  var bloc = QuizBloc();
+
+  QuizWidget(Categories categories) {
+    bloc.add(LoadQuiz(categories));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +142,6 @@ class AnswerWidget extends StatefulWidget {
 
 class AnswerState extends State<AnswerWidget> {
   Options options;
-
   var offset = Offset(0.0, 0.0);
 
   AnswerState(this.options);
@@ -151,10 +154,13 @@ class AnswerState extends State<AnswerWidget> {
     var width = MediaQuery.of(context).size.width;
 
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context)
-            .push(new MaterialPageRoute(builder: (context) => AnswerOverlay(options.answer)));
-        // BlocProvider.of<QuizBloc>(context).add(SubmitAnswer(options));
+      onTap: () async {
+        await Navigator.of(context).push(new MaterialPageRoute(
+            builder: (context) =>
+                AnswerOverlay(options.answer, options.isRightAnswer)));
+        Future.delayed(Duration(milliseconds: 1000), () {
+          BlocProvider.of<QuizBloc>(context).add(SubmitAnswer(options));
+        });
       },
       child: Hero(
         tag: options.answer,
