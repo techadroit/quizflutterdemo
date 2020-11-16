@@ -48,40 +48,84 @@ class QuizWidget extends StatelessWidget {
   }
 }
 
-class QuestionWidget extends StatelessWidget {
+class QuestionWidget extends StatefulWidget {
   Questions questions;
 
   QuestionWidget(this.questions, Key key) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return QuestionState(questions);
+  }
+}
+
+class QuestionState extends State<QuestionWidget>
+    with SingleTickerProviderStateMixin {
+  Questions questions;
+  AnimationController _controller;
+  bool isReversed = false;
+  ValueChanged<bool> action;
+
+  QuestionState(this.questions);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+        lowerBound: 0.0,
+        upperBound: 1.0,
+        duration: const Duration(milliseconds: 1000),
+        vsync: this);
+    _controller.forward();
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.reverse) {
+        isReversed = true;
+      }
+    });
+
+    action = (value) {
+      if (value) _controller.reverse();
+    };
+  }
+
+  @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).primaryTextTheme;
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      height: double.infinity,
-      child: Expanded(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              questions.question,
-              style: textTheme.headline2,
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Container(
+          margin: EdgeInsets.all(8.0),
+          height: double.infinity,
+          child: Opacity(
+            opacity: _controller.value,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text(
+                  questions.question,
+                  style: textTheme.headline2,
+                ),
+                buildTimer(context),
+                Expanded(
+                  child: GridView.builder(
+                      itemCount: questions.options.length,
+                      gridDelegate:
+                          new SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2),
+                      itemBuilder: (context, index) {
+                        var option = questions.options[index];
+                        return AnswerWidget(option, action);
+                      }),
+                )
+              ],
             ),
-            buildTimer(context),
-            Flexible(
-              child: GridView.builder(
-                  itemCount: questions.options.length,
-                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: (context, index) {
-                    var option = questions.options[index];
-                    return AnswerWidget(option);
-                  }),
-            )
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -131,8 +175,9 @@ class QuestionWidget extends StatelessWidget {
 
 class AnswerWidget extends StatefulWidget {
   Options options;
+  ValueChanged<bool> action;
 
-  AnswerWidget(this.options);
+  AnswerWidget(this.options, this.action);
 
   @override
   State<StatefulWidget> createState() {
@@ -155,9 +200,10 @@ class AnswerState extends State<AnswerWidget> {
 
     return GestureDetector(
       onTap: () async {
-        await Navigator.of(context).push(new MaterialPageRoute(
+       await Navigator.of(context).push(new MaterialPageRoute(
             builder: (context) =>
                 AnswerOverlay(options.answer, options.isRightAnswer)));
+        widget.action.call(true);
         Future.delayed(Duration(milliseconds: 1000), () {
           BlocProvider.of<QuizBloc>(context).add(SubmitAnswer(options));
         });

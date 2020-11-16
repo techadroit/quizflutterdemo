@@ -1,5 +1,6 @@
 import 'package:TataEdgeDemo/data/animal_questions.dart';
 import 'package:TataEdgeDemo/data/categories.dart';
+import 'package:TataEdgeDemo/data/planet_questions.dart';
 import 'package:TataEdgeDemo/data/qustions.dart';
 
 import 'topics.dart';
@@ -15,6 +16,9 @@ class DataSource {
   }
 
   List<Questions> getQuestions(Categories categories) {
-    return AnimalQuestions().getQuestions();
+    if (categories == Categories.planet)
+      return PlanetQuestions().getQuestions();
+    else
+      return AnimalQuestions().getQuestions();
   }
 }

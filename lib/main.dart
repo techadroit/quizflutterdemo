@@ -1,11 +1,8 @@
-import 'package:TataEdgeDemo/blocs/quiz/quiz_state.dart';
-import 'package:TataEdgeDemo/blocs/topics/topic_bloc.dart';
-import 'package:TataEdgeDemo/blocs/topics/topic_event.dart';
-import 'package:TataEdgeDemo/blocs/topics/topic_state.dart';
-import 'package:TataEdgeDemo/view/quiz/quiz_widget.dart';
+import 'package:TataEdgeDemo/data/animation_demo.dart';
+import 'package:TataEdgeDemo/data/container_transform_demo.dart';
+import 'package:TataEdgeDemo/data/shared_axis_demo.dart';
 import 'package:TataEdgeDemo/view/topic_list_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,26 +16,27 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primaryTextTheme: TextTheme(
-            headline1: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                fontFamily: 'Montserrat',
-                color: new Color(0xFF342d25)),
-            headline2: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 32,
-                fontFamily: 'Montserrat',
-                color: Colors.white.withOpacity(0.8)),
-            subtitle1: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                fontFamily: 'OpenSans',
-                color: Colors.white.withOpacity(0.8)),
-            bodyText1: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22,
-                fontFamily: 'OpenSans',
-                color: Colors.black),),
+          headline1: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontFamily: 'Montserrat',
+              color: new Color(0xFF342d25)),
+          headline2: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+              fontFamily: 'Montserrat',
+              color: Colors.white.withOpacity(0.8)),
+          subtitle1: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              fontFamily: 'OpenSans',
+              color: Colors.white.withOpacity(0.8)),
+          bodyText1: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              fontFamily: 'OpenSans',
+              color: Colors.black),
+        ),
         brightness: Brightness.light,
         primaryColor: new Color(0xFFc034eb),
         colorScheme: ColorScheme.light(
@@ -49,11 +47,14 @@ class MyApp extends StatelessWidget {
           onSecondary: new Color(0xffefbc5a),
           onSurface: new Color(0xff88949d),
         ),
+        pageTransitionsTheme: PageTransitionsTheme(
+            builders: <TargetPlatform, PageTransitionsBuilder>{
+              TargetPlatform.android: ZoomPageTransitionsBuilder(),
+            }),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
-        body: TopicListWidget()
-      ),
+           body: TopicListWidget()),
     );
   }
 }
