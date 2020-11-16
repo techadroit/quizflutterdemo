@@ -6,9 +6,36 @@ import 'package:TataEdgeDemo/blocs/quiz/quiz_state.dart';
 import 'package:TataEdgeDemo/data/categories.dart';
 import 'package:TataEdgeDemo/data/qustions.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+class _OpenContainerWrapper extends StatelessWidget {
+  _OpenContainerWrapper({
+    this.closedBuilder,
+    this.onClosed,
+    this.questions,
+  });
+
+  final OpenContainerBuilder closedBuilder;
+  final ClosedCallback<bool> onClosed;
+  final Questions questions;
+  ContainerTransitionType _transitionType = ContainerTransitionType.fade;
+
+  @override
+  Widget build(BuildContext context) {
+    return OpenContainer<bool>(
+      transitionType: _transitionType,
+      openBuilder: (BuildContext context, VoidCallback _) {
+        return QuestionWidget(questions, ValueKey(questions.question));
+      },
+      onClosed: onClosed,
+      tappable: false,
+      closedBuilder: closedBuilder,
+    );
+  }
+}
 
 class QuizWidget extends StatelessWidget {
   var bloc = QuizBloc()..add(LoadQuiz(Categories.animal));
@@ -26,9 +53,10 @@ class QuizWidget extends StatelessWidget {
             builder: (context, state) {
               debugPrint(" the state is $state");
               if (state is ShowQuestion) {
-                return QuestionWidget(state.questions,ValueKey(state.questions.question));
+                return QuestionWidget(
+                    state.questions, ValueKey(state.questions.question));
               } else if (state is QuizComplete) {
-                return QuizCompleteWidget(state.marks,state.total);
+                return QuizCompleteWidget(state.marks, state.total);
               } else {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -42,44 +70,73 @@ class QuizWidget extends StatelessWidget {
   }
 }
 
-class QuestionWidget extends StatelessWidget {
+class QuestionWidget extends StatefulWidget {
   Questions questions;
 
-  QuestionWidget(this.questions,Key key):super(key:key);
+  QuestionWidget(this.questions, Key key) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return QuestionState(questions);
+  }
+}
+
+class QuestionState extends State<QuestionWidget>
+    with SingleTickerProviderStateMixin {
+  Questions questions;
+  AnimationController _controller;
+
+  QuestionState(this.questions);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      lowerBound: 0.0,upperBound: 1.0,
+        duration: const Duration(milliseconds: 1000), vsync: this);
+    _controller.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).primaryTextTheme;
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      height: double.infinity,
-      child: Expanded(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              questions.question,
-              style: textTheme.headline2,
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context,child){
+        return Container(
+          margin: EdgeInsets.all(8.0),
+          height: double.infinity,
+          child: Opacity(
+            opacity: _controller.value,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text(
+                  questions.question,
+                  style: textTheme.headline2,
+                ),
+                buildTimer(context),
+                Expanded(
+                  child: GridView.builder(
+                      itemCount: questions.options.length,
+                      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2),
+                      itemBuilder: (context, index) {
+                        var option = questions.options[index];
+                        return AnswerWidget(option);
+                      }),
+                )
+              ],
             ),
-            buildTimer(context),
-            Flexible(
-              child: GridView.builder(
-                  itemCount: questions.options.length,
-                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: (context, index) {
-                    var option = questions.options[index];
-                    return AnswerWidget(option);
-                  }),
-            )
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget buildTimer(BuildContext context){
+  Widget buildTimer(BuildContext context) {
     return Container(
       child: Stack(
         children: [
@@ -95,7 +152,18 @@ class QuestionWidget extends StatelessWidget {
                 },
                 totalRepeatCount: 1,
                 duration: Duration(milliseconds: 600),
-                text: ["10", "09", "08","07","06","05","04","03","02","01"],
+                text: [
+                  "10",
+                  "09",
+                  "08",
+                  "07",
+                  "06",
+                  "05",
+                  "04",
+                  "03",
+                  "02",
+                  "01"
+                ],
                 textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -103,7 +171,7 @@ class QuestionWidget extends StatelessWidget {
                     fontFamily: "OpenSans"),
                 textAlign: TextAlign.center,
                 alignment: AlignmentDirectional.center // or Alignment.topLeft
-            ),
+                ),
           ),
           QuestionTimeOut(),
         ],
@@ -147,11 +215,10 @@ class AnswerWidget extends StatelessWidget {
 }
 
 class QuizCompleteWidget extends StatelessWidget {
-
   int marks;
   int total;
 
-  QuizCompleteWidget(this.marks,this.total);
+  QuizCompleteWidget(this.marks, this.total);
 
   @override
   Widget build(BuildContext context) {
@@ -159,23 +226,29 @@ class QuizCompleteWidget extends StatelessWidget {
       margin: EdgeInsets.all(16.0),
       child: Center(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("You have given $marks correct answer.",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).primaryTextTheme.headline2,),
-              SizedBox(height:30.0),
-              OutlineButton(
-                onPressed: (){
-                  Navigator.of(context).pop();
-                },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-                borderSide: BorderSide(color:Theme.of(context).colorScheme.secondary,width: 2.0),
-                child: Text("Close",style: Theme.of(context).primaryTextTheme.subtitle1,),
-              )
-            ],
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "You have given $marks correct answer.",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).primaryTextTheme.headline2,
+          ),
+          SizedBox(height: 30.0),
+          OutlineButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0)),
+            borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary, width: 2.0),
+            child: Text(
+              "Close",
+              style: Theme.of(context).primaryTextTheme.subtitle1,
+            ),
           )
-      ),
+        ],
+      )),
     );
   }
 }
@@ -189,7 +262,6 @@ class QuestionTimeOut extends StatefulWidget {
 
 class QuestionTimeOutState extends State<QuestionTimeOut>
     with SingleTickerProviderStateMixin {
-
   AnimationController controller;
 
   @override
@@ -217,13 +289,11 @@ class QuestionTimeOutState extends State<QuestionTimeOut>
     return AnimatedBuilder(
       animation: controller,
       builder: (BuildContext context, Widget child) {
-
         return Container(
           margin: EdgeInsets.all(16.0),
           height: 120,
           width: 120,
-          child: CustomPaint(
-              painter: ProgressPainter(controller.value)),
+          child: CustomPaint(painter: ProgressPainter(controller.value)),
         );
       },
     );
@@ -245,7 +315,9 @@ class ProgressPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // double _sweep = math.pi * _arcConstant/arcValue;
-    double value = arcValue == 0 ? 2 : _arcConstant - arcValue;//(_arcConstant - (2 / arcValue));
+    double value = arcValue == 0
+        ? 2
+        : _arcConstant - arcValue; //(_arcConstant - (2 / arcValue));
     double _sweep = -(math.pi * value);
 
     var paint = Paint()
