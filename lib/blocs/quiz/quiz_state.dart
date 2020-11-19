@@ -1,9 +1,21 @@
 import 'package:TataEdgeDemo/blocs/base_bloc.dart';
+import 'package:TataEdgeDemo/data/exceptoins.dart';
 import 'package:TataEdgeDemo/data/qustions.dart';
 
 class QuizState extends AppState {}
 
 class QuizNotInitialized extends QuizState {}
+
+class LoadQuizInProgress extends QuizState {}
+
+class LoadQuizError extends QuizState {
+  Exception exception;
+
+  LoadQuizError(this.exception);
+
+  @override
+  List<Object> get props => [exception];
+}
 
 class QuizLoaded extends QuizState {
   List<Questions> list;
@@ -23,7 +35,8 @@ class ShowQuestion extends QuizState {
 class QuizComplete extends QuizState {
   int marks;
   int total;
-  QuizComplete(this.marks,this.total);
+
+  QuizComplete(this.marks, this.total);
 }
 
 class CorrectAnswer extends QuizState {}

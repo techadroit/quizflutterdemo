@@ -1,6 +1,4 @@
-import 'package:TataEdgeDemo/data/animation_demo.dart';
-import 'package:TataEdgeDemo/data/container_transform_demo.dart';
-import 'package:TataEdgeDemo/data/shared_axis_demo.dart';
+import 'package:TataEdgeDemo/data/network/network_client/network_handler.dart';
 import 'package:TataEdgeDemo/view/topic_list_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +10,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    NetworkHandler(isDebugMode: true);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -53,8 +52,7 @@ class MyApp extends StatelessWidget {
             }),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Scaffold(
-           body: TopicListWidget()),
+      home: Scaffold(body: TopicListWidget()),
     );
   }
 }

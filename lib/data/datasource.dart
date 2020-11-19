@@ -1,6 +1,5 @@
 import 'package:TataEdgeDemo/data/animal_questions.dart';
 import 'package:TataEdgeDemo/data/categories.dart';
-import 'package:TataEdgeDemo/data/planet_questions.dart';
 import 'package:TataEdgeDemo/data/qustions.dart';
 
 import 'topics.dart';
@@ -8,17 +7,16 @@ import 'topics.dart';
 class DataSource {
   List<Topics> getTopics() {
     return [
-      Topics("Animal", "1", categories: Categories.animal),
-      Topics("Plant", "2", categories: Categories.plants),
-      Topics("Planet", "3", categories: Categories.planet),
-      Topics("Birds", "4", categories: Categories.birds),
+      Topics("Linux", "1", categories: Categories.linux),
+      Topics("Cloud", "1", categories: Categories.cloud),
+      Topics("DevOps", "1", categories: Categories.devops),
+      Topics("Docker", "1", categories: Categories.docker),
+      Topics("Kubernates", "1", categories: Categories.kubernates),
+      Topics("Networking", "1", categories: Categories.networking),
     ];
   }
 
   List<Questions> getQuestions(Categories categories) {
-    if (categories == Categories.planet)
-      return PlanetQuestions().getQuestions();
-    else
-      return AnimalQuestions().getQuestions();
+    return AnimalQuestions().getQuestions();
   }
 }

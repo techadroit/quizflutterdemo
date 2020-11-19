@@ -33,6 +33,8 @@ class QuizWidget extends StatelessWidget {
               if (state is ShowQuestion) {
                 return QuestionWidget(
                     state.questions, ValueKey(state.questions.question));
+              } else if (state is LoadQuizError) {
+                return QuizLoadErrorWidget();
               } else if (state is QuizComplete) {
                 return QuizCompleteWidget(state.marks, state.total);
               } else {
@@ -200,7 +202,7 @@ class AnswerState extends State<AnswerWidget> {
 
     return GestureDetector(
       onTap: () async {
-       await Navigator.of(context).push(new MaterialPageRoute(
+        await Navigator.of(context).push(new MaterialPageRoute(
             builder: (context) =>
                 AnswerOverlay(options.answer, options.isRightAnswer)));
         widget.action.call(true);
@@ -360,5 +362,39 @@ class ProgressPainter extends CustomPainter {
   @override
   bool shouldRepaint(ProgressPainter oldDelegate) {
     return oldDelegate.arcValue != arcValue;
+  }
+}
+
+class QuizLoadErrorWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "No Questions found for this categories.",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).primaryTextTheme.headline2,
+            ),
+            SizedBox(height: 30.0),
+            OutlineButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0)),
+              borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.secondary, width: 2.0),
+              child: Text(
+                "Close",
+                style: Theme.of(context).primaryTextTheme.subtitle1,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
