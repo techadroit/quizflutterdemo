@@ -1,8 +1,10 @@
 import 'package:TataEdgeDemo/data/network/network_client/network_handler.dart';
 import 'package:TataEdgeDemo/view/topic_list_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
+  CustomObserver();
   runApp(MyApp());
 }
 
@@ -14,6 +16,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+
+        buttonColor: new Color(0xff88949d),
         primaryTextTheme: TextTheme(
           headline1: TextStyle(
               fontWeight: FontWeight.w600,
@@ -55,4 +59,14 @@ class MyApp extends StatelessWidget {
       home: Scaffold(body: TopicListWidget()),
     );
   }
+}
+
+class CustomObserver extends BlocObserver{
+
+  @override
+  void onChange(Cubit cubit, Change change) {
+    print('${cubit.runtimeType} $change');
+    super.onChange(cubit, change);
+  }
+
 }

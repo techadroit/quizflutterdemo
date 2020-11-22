@@ -2,47 +2,63 @@ import 'package:TataEdgeDemo/blocs/base_bloc.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_event.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_state.dart';
 import 'package:TataEdgeDemo/data/categories.dart';
-import 'package:TataEdgeDemo/data/network/network_client/network_handler.dart';
-import 'package:TataEdgeDemo/data/qustions.dart';
-import 'package:TataEdgeDemo/data/remote_repository.dart';
 import 'package:TataEdgeDemo/services/quiz_service.dart';
+import 'package:flutter/cupertino.dart';
 
 class QuizBloc extends BaseBloc<QuizEvent, QuizState> {
-  QuizService quizService =
-      new QuizService(RemoteRepository(NetworkHandler.instance.getClient()));
-  int currentQuiz = 0;
-  List<Questions> list;
-  int correctAnswercount = 0;
-  Questions currentQuestions;
+  QuizService quizService;
 
-  QuizBloc() : super(QuizNotInitialized());
-
-  @override
-  Stream<QuizState> mapEventToState(QuizEvent event) async* {
-    if (event is LoadQuiz) {
-      yield LoadQuizInProgress();
-      yield await loadQuiz(event.categories.value());
-    } else if (event is ShowNext) {
-      yield showQuiz();
-    } else if (event is SubmitAnswer) {
-      if (event.answer == currentQuestions.getAnswer()) correctAnswercount++;
-      yield showQuiz();
-    }
-  }
-
-  Future<QuizState> loadQuiz(String category) async{
-    var response = await quizService.getQuestions(category);
-    return response.fold((l) => LoadQuizError(l), (r) {
-      list = r;
-      return showQuiz();
+  QuizBloc(this.quizService) : super(QuizNotInitialized()) {
+    quizService.publishSubject.listen((value) {
+      if (value is NextPage) {
+        add(ShowNext());
+      } else if (value is PrevPage) {
+        add(ShowPrev());
+      } else if (value is PageFinished) {
+        add(QuizCompleteEvent(value.marks, value.total));
+      }
     });
   }
 
-  QuizState showQuiz() {
-    if (currentQuiz > list.length - 1)
-      return QuizComplete(correctAnswercount, list.length);
-    var question = list[currentQuiz++];
-    currentQuestions = question;
-    return ShowQuestion(question);
+  @override
+  Stream<QuizState> mapEventToState(QuizEvent event) async* {
+    debugPrint(" [QuizBloc] the event is $event");
+    if (event is LoadQuiz) {
+      yield LoadQuizInProgress();
+      yield await loadQuiz(event.categories.value());
+    } else if (event is ShowNext || event is ShowPrev) {
+      yield ShowQuestion(quizService.currentPage,
+          isFirstPage: quizService.isFirstPage(),
+          isLastPage: quizService.isLastPage());
+    } else if (event is QuizCompleteEvent) {
+      yield QuizComplete(event.marks, event.total, quizService.questionsList);
+    }
+  }
+
+  Future<QuizState> loadQuiz(String category) async {
+    var response = await quizService.loadQuestion(category);
+    return response.fold((l) => LoadQuizError(l), (r) {
+      return ShowQuestion(quizService.currentPage,
+          isFirstPage: quizService.isFirstPage(),
+          isLastPage: quizService.isLastPage());
+    });
+  }
+
+  void showNextPage() {
+    quizService.goToNextPage();
+  }
+
+  void showPrevPage() {
+    quizService.goToPrevPage();
+  }
+
+  void completeQuiz() {
+    quizService.onCompleteQuiz();
+  }
+
+  @override
+  Future<void> close() {
+    quizService.close();
+    return super.close();
   }
 }

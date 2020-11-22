@@ -21,7 +21,8 @@ class QuizIntroWidget extends StatelessWidget {
             },
             onFinished: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => QuizWidget(categories)));
+                  builder: (BuildContext context) =>
+                      QuizWidget.getQuizWidget(categories, context)));
             },
             duration: Duration(milliseconds: 1000),
             totalRepeatCount: 1,

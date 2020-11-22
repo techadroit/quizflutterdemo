@@ -12,6 +12,13 @@ class LoadQuiz extends QuizEvent{
 class OptionSelected extends QuizEvent{}
 
 class ShowNext extends QuizEvent{}
+class ShowPrev extends QuizEvent{}
+
+class QuizCompleteEvent extends QuizEvent{
+  int marks;
+  int total;
+  QuizCompleteEvent(this.marks,this.total);
+}
 
 class SubmitAnswer extends QuizEvent{
   Options answer;

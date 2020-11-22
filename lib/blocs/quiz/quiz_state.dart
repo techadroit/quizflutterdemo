@@ -1,8 +1,11 @@
 import 'package:TataEdgeDemo/blocs/base_bloc.dart';
-import 'package:TataEdgeDemo/data/exceptoins.dart';
 import 'package:TataEdgeDemo/data/qustions.dart';
 
-class QuizState extends AppState {}
+class QuizState extends AppState {
+
+  @override
+  bool get stringify => true;
+}
 
 class QuizNotInitialized extends QuizState {}
 
@@ -24,19 +27,26 @@ class QuizLoaded extends QuizState {
 }
 
 class ShowQuestion extends QuizState {
-  Questions questions;
+  int index;
+  bool isFirstPage;
+  bool isLastPage;
 
-  ShowQuestion(this.questions);
+  ShowQuestion(this.index, {this.isFirstPage = false, this.isLastPage = false});
 
   @override
-  List<Object> get props => [questions];
+  List<Object> get props => [index];
+
 }
 
 class QuizComplete extends QuizState {
   int marks;
   int total;
+  List<Questions> questionsList;
 
-  QuizComplete(this.marks, this.total);
+  QuizComplete(this.marks, this.total,this.questionsList);
+
+  @override
+  List<Object> get props => [marks,total,questionsList];
 }
 
 class CorrectAnswer extends QuizState {}
