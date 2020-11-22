@@ -73,12 +73,4 @@ main() {
     bloc.add(ShowPrev());
 
   });
-  test("test quiz complete event", () {
-
-    var expected = [QuizComplete(1,10,[])];
-
-    expectLater(bloc, emitsInOrder(expected));
-    bloc.add(QuizCompleteEvent(1,10));
-
-  });
 }
