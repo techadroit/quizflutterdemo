@@ -1,10 +1,11 @@
 import 'package:TataEdgeDemo/blocs/quiz/quiz_bloc.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_event.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_state.dart';
-import 'package:TataEdgeDemo/data/categories.dart';
-import 'package:TataEdgeDemo/data/exceptoins.dart';
+import 'package:TataEdgeDemo/data/datasource/exceptoins.dart';
 import 'package:TataEdgeDemo/data/network/request/api_question_list_response.dart';
-import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:TataEdgeDemo/model/categories.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
+import 'package:TataEdgeDemo/services/page_state.dart';
 import 'package:TataEdgeDemo/services/quiz_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +21,7 @@ main() {
 
   setUp(() {
     var publishSubject = PublishSubject<PageState>();
-    when(quizService.publishSubject).thenAnswer((_) => publishSubject);
+    when(quizService.pageStatePublisher).thenAnswer((_) => publishSubject);
     bloc = QuizBloc(quizService);
 
     bloc.listen((state) {
@@ -45,7 +46,7 @@ main() {
         .thenAnswer((realInvocation) async => Left(exception));
 
     expectLater(
-        bloc, emitsInOrder([LoadQuizInProgress(), LoadQuizError(exception)]));
+        bloc, emitsInOrder([LoadQuizInProgress(), LoadQuizFailure(exception)]));
 
     bloc.add(LoadQuiz(Categories.cloud));
   });
@@ -59,7 +60,6 @@ main() {
 
     expectLater(bloc, emitsInOrder(expected));
     bloc.add(ShowNext());
-
   });
 
   test("show previous quiz", () {
@@ -71,6 +71,5 @@ main() {
 
     expectLater(bloc, emitsInOrder(expected));
     bloc.add(ShowPrev());
-
   });
 }

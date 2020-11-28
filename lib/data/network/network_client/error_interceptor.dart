@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import '../../exceptoins.dart';
+import '../../datasource/exceptoins.dart';
 
 class ErrorInterceptor extends Interceptor {
   @override

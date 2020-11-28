@@ -1,15 +1,16 @@
 import 'package:TataEdgeDemo/blocs/base_bloc.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_event.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_state.dart';
-import 'package:TataEdgeDemo/data/categories.dart';
+import 'package:TataEdgeDemo/services/page_state.dart';
 import 'package:TataEdgeDemo/services/quiz_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:TataEdgeDemo/model/categories.dart';
 
 class QuizBloc extends BaseBloc<QuizEvent, QuizState> {
   QuizService quizService;
 
   QuizBloc(this.quizService) : super(QuizNotInitialized()) {
-    quizService.publishSubject.listen((value) {
+    quizService.pageStatePublisher.listen((value) {
       if (value is NextPage) {
         add(ShowNext());
       } else if (value is PrevPage) {
@@ -37,7 +38,7 @@ class QuizBloc extends BaseBloc<QuizEvent, QuizState> {
 
   Future<QuizState> loadQuiz(String category) async {
     var response = await quizService.loadQuestion(category);
-    return response.fold((l) => LoadQuizError(l), (r) {
+    return response.fold((l) => LoadQuizFailure(l), (r) {
       return ShowQuestion(quizService.currentPage,
           isFirstPage: quizService.isFirstPage(),
           isLastPage: quizService.isLastPage());

@@ -1,4 +1,4 @@
-import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
 import 'package:TataEdgeDemo/view/quiz_preview/quiz_preview_view.dart';
 import 'package:flutter/material.dart';
 

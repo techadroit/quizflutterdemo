@@ -1,12 +1,15 @@
 import 'package:TataEdgeDemo/blocs/base_bloc.dart';
-import 'package:TataEdgeDemo/data/categories.dart';
-import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:TataEdgeDemo/model/categories.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
 
 class QuizEvent extends AppEvent{}
 
 class LoadQuiz extends QuizEvent{
   Categories categories;
   LoadQuiz(this.categories);
+
+  @override
+  List<Object> get props => [categories];
 }
 
 class OptionSelected extends QuizEvent{}
@@ -20,9 +23,9 @@ class QuizCompleteEvent extends QuizEvent{
   QuizCompleteEvent(this.marks,this.total);
 }
 
-class SubmitAnswer extends QuizEvent{
+class AnswerSubmittedEvent extends QuizEvent{
   Options answer;
-  SubmitAnswer(this.answer);
+  AnswerSubmittedEvent(this.answer);
 
   @override
   List<Object> get props => [answer];

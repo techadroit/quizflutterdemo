@@ -1,5 +1,5 @@
 import 'package:TataEdgeDemo/blocs/base_bloc.dart';
-import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
 
 class QuestionEvent extends AppEvent {}
 

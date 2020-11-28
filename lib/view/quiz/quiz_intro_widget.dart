@@ -1,4 +1,4 @@
-import 'package:TataEdgeDemo/data/categories.dart';
+import 'package:TataEdgeDemo/model/categories.dart';
 import 'package:TataEdgeDemo/view/quiz/quiz_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';

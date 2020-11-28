@@ -1,10 +1,10 @@
 import 'package:TataEdgeDemo/data/network/network_client/network_handler.dart';
-import 'package:TataEdgeDemo/view/topic_list_widget.dart';
+import 'file:///C:/workspace/flutter_workspace/TataEdgeDemo/lib/view/topics/topic_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  CustomObserver();
+  BlocLogger();
   runApp(MyApp());
 }
 
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class CustomObserver extends BlocObserver{
+class BlocLogger extends BlocObserver{
 
   @override
   void onChange(Cubit cubit, Change change) {

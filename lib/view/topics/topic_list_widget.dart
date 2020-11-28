@@ -15,9 +15,9 @@ class TopicListWidget extends StatelessWidget {
     return SafeArea(
         child: BlocBuilder(
           cubit: TopicBloc()
-            ..add(LoadTopic()),
+            ..add(LoadTopicEvent()),
           builder: (context, state) {
-            if (state is TopicsLoaded) {
+            if (state is LoadTopicsSuccess) {
               var list = state.list;
               return ListView.separated(
                   itemCount: list.length,

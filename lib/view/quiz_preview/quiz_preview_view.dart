@@ -1,4 +1,4 @@
-import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +45,9 @@ class QuizPreviewWidget extends StatelessWidget {
                   return AnswerPreviewWidget(option);
                 }),
           ),
+          SizedBox(height: 12.0),
+          if (questions.selectedOptions == null)
+            Text("No options selected", style: textTheme.subtitle1)
         ],
       ),
     );

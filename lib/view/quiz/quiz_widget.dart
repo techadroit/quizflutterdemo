@@ -1,9 +1,9 @@
 import 'package:TataEdgeDemo/blocs/quiz/quiz_bloc.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_event.dart';
 import 'package:TataEdgeDemo/blocs/quiz/quiz_state.dart';
-import 'package:TataEdgeDemo/data/categories.dart';
+import 'package:TataEdgeDemo/data/datasource/remote_repository.dart';
 import 'package:TataEdgeDemo/data/network/network_client/network_handler.dart';
-import 'package:TataEdgeDemo/data/remote_repository.dart';
+import 'package:TataEdgeDemo/model/categories.dart';
 import 'package:TataEdgeDemo/services/quiz_service.dart';
 import 'package:TataEdgeDemo/view/question/question_widget.dart';
 import 'package:TataEdgeDemo/view/quiz/quiz_complete_widget.dart';
@@ -19,7 +19,7 @@ class QuizWidget extends StatelessWidget {
 
   static Widget getQuizWidget(Categories categories, BuildContext context) {
     var quizService =
-        new QuizService(RemoteRepository(NetworkHandler.instance.getClient()));
+        new QuizService(RemoteDatasource(NetworkHandler.instance.getClient()));
     var bloc = QuizBloc(quizService)..add(LoadQuiz(categories));
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -55,10 +55,11 @@ class QuizContainerWidget extends StatelessWidget {
             debugPrint(" [QuizBloc] the state is ${state.toString()}");
             if (state is ShowQuestion) {
               return QuestionWidget(state.index, ValueKey(state.index));
-            } else if (state is LoadQuizError) {
+            } else if (state is LoadQuizFailure) {
               return QuizLoadErrorWidget();
             } else if (state is QuizComplete) {
-              return QuizCompleteWidget(state.marks, state.total,state.questionsList);
+              return QuizCompleteWidget(
+                  state.marks, state.total, state.questionsList);
             } else {
               return Center(
                 child: CircularProgressIndicator(),

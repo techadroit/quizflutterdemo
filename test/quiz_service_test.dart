@@ -1,14 +1,14 @@
-import 'package:TataEdgeDemo/data/exceptoins.dart';
+import 'package:TataEdgeDemo/data/datasource/exceptoins.dart';
+import 'package:TataEdgeDemo/data/datasource/remote_repository.dart';
 import 'package:TataEdgeDemo/data/network/request/api_question_list_response.dart';
-import 'package:TataEdgeDemo/data/qustions.dart';
-import 'package:TataEdgeDemo/data/remote_repository.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
+import 'package:TataEdgeDemo/services/page_state.dart';
 import 'package:TataEdgeDemo/services/quiz_service.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-class MockRemoteRepository extends Mock implements RemoteRepository {}
+class MockRemoteRepository extends Mock implements RemoteDatasource {}
 
 main() {
   QuizService quizService;
@@ -42,13 +42,13 @@ main() {
   });
 
   test("test service emits next page change event", () async {
-    expectLater(quizService.publishSubject, emitsInOrder([NextPage(1)]));
+    expectLater(quizService.pageStatePublisher, emitsInOrder([NextPage(1)]));
     quizService.goToNextPage();
   });
 
   test("test service emits prev page change event", () async {
     quizService.currentPage = 1;
-    expectLater(quizService.publishSubject, emitsInOrder([PrevPage(0)]));
+    expectLater(quizService.pageStatePublisher, emitsInOrder([PrevPage(0)]));
     quizService.goToPrevPage();
   });
 
@@ -57,7 +57,8 @@ main() {
     quizService.questionsList = [
       Questions.fromResponse(QuestionsListResponse.mock())
     ];
-    expectLater(quizService.publishSubject, emitsInOrder([PageFinished(0, 1)]));
+    expectLater(
+        quizService.pageStatePublisher, emitsInOrder([PageFinished(0, 1)]));
     quizService.goToNextPage();
   });
 
@@ -68,6 +69,5 @@ main() {
     ];
     int marks = quizService.getMarks(list);
     expect(marks, 1);
-
   });
 }

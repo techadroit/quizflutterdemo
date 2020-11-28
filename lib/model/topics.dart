@@ -1,4 +1,5 @@
-import 'package:TataEdgeDemo/data/categories.dart';
+
+import 'package:TataEdgeDemo/model/categories.dart';
 
 class Topics {
   String name;

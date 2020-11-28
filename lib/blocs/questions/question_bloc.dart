@@ -1,7 +1,7 @@
 import 'package:TataEdgeDemo/blocs/base_bloc.dart';
 import 'package:TataEdgeDemo/blocs/questions/question_event.dart';
 import 'package:TataEdgeDemo/blocs/questions/question_state.dart';
-import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
 import 'package:TataEdgeDemo/services/quiz_service.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -18,7 +18,7 @@ class QuestionBloc extends BaseBloc<QuestionEvent, QuestionState> {
     if (event is LoadQuestion) {
       yield quizService
           .getQuestion(event.index)
-          .fold((l) => QuestionLoadError(l), (r) {
+          .fold((l) => QuestionLoadFailure(l), (r) {
         questions = r;
         return QuestionLoadSuccess(r);
       });
@@ -31,6 +31,8 @@ class QuestionBloc extends BaseBloc<QuestionEvent, QuestionState> {
     }
   }
 
+  /// update the qeustion with the option selected
+  /// and mark the option as selected to highlight
   void updateQuestion() {
     questions.options.forEach((element) {
       element.isSelected = false;

@@ -1,6 +1,6 @@
 import 'package:TataEdgeDemo/blocs/base_bloc.dart';
-import 'package:TataEdgeDemo/data/exceptoins.dart';
-import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:TataEdgeDemo/data/datasource/exceptoins.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
 
 class QuestionState extends AppState {
 
@@ -28,9 +28,9 @@ class QuestionLoadSuccess extends QuestionState{
   List<Object> get props => [questions];
 }
 
-class QuestionLoadError extends QuestionState{
+class QuestionLoadFailure extends QuestionState{
   AppException exception;
-  QuestionLoadError(this.exception);
+  QuestionLoadFailure(this.exception);
 }
 
 class CorrectAnswerSelected extends QuestionState{

@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:TataEdgeDemo/blocs/questions/question_bloc.dart';
 import 'package:TataEdgeDemo/blocs/questions/question_event.dart';
 import 'package:TataEdgeDemo/blocs/questions/question_state.dart';
-import 'package:TataEdgeDemo/data/qustions.dart';
+import 'package:TataEdgeDemo/model/qustions.dart';
 import 'package:TataEdgeDemo/services/quiz_service.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,13 +1,13 @@
 import 'package:TataEdgeDemo/blocs/base_bloc.dart';
-import 'package:TataEdgeDemo/data/topics.dart';
+import 'package:TataEdgeDemo/model/topics.dart';
 
 class TopicState extends AppState{}
 
 class TopicNonInitialized extends TopicState{}
 
-class TopicsLoaded extends TopicState{
+class LoadTopicsSuccess extends TopicState{
   List<Topics> list;
-  TopicsLoaded(this.list);
+  LoadTopicsSuccess(this.list);
 }
 
-class TopicsLoading extends TopicState{}
+class TopicsLoadInProgress extends TopicState{}
